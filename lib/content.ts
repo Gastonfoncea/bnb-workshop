@@ -1,3 +1,5 @@
+export const SITE_URL = "https://bnb-workshop.vercel.app";
+
 export const workshop = {
   eyebrow: "BNB Chain · Workshop",
   title: "AI Agents on Chain",
@@ -5,26 +7,38 @@ export const workshop = {
 };
 
 /**
- * The two commands attendees paste into Claude Code to install the workshop
- * skill. Both are plain text, so the copy button works the same as for a URL.
+ * Step 1 — install. One command per platform; the script auto-detects Claude
+ * Code, Codex and Cursor and installs into whichever it finds.
  */
-export const copyLinks = [
+export const installCommands = [
   {
-    id: "marketplace",
-    label: "1 · Add the workshop marketplace",
-    hint: "Paste into Claude Code.",
-    // Full HTTPS URL on purpose: the `owner/repo` shorthand clones over SSH,
-    // which fails for anyone without GitHub SSH keys set up.
-    value:
-      "/plugin marketplace add https://github.com/Gastonfoncea/bnb-workshop.git",
+    id: "posix",
+    os: "macOS / Linux",
+    value: `curl -fsSL ${SITE_URL}/install.sh | sh`,
   },
   {
-    id: "install",
-    label: "2 · Install the skill",
-    hint: "Then run /reload-plugins to activate it.",
-    value: "/plugin install create-bnb-agent@bnb-workshop",
+    id: "windows",
+    os: "Windows",
+    value: `irm ${SITE_URL}/install.ps1 | iex`,
   },
 ];
+
+/**
+ * Step 2 — what to say to the assistant once the skill is installed. The skill
+ * only needs a name and a function; it asks for whatever is missing and picks
+ * every other setting itself.
+ */
+export const agentPrompt = {
+  label: "2 · Tell your agent what to build",
+  hint: "Restart your assistant first. Edit the name and the job — the skill asks for anything it still needs.",
+  value:
+    'Use the create-bnb-agent skill to create a workshop seller agent named "TxExplainer" that explains what a BNB Chain transaction did in plain English.',
+};
+
+export const claudeCodeAlt = {
+  marketplace: `/plugin marketplace add ${"https://github.com/Gastonfoncea/bnb-workshop.git"}`,
+  install: "/plugin install create-bnb-agent@bnb-workshop",
+};
 
 export const steps = [
   {

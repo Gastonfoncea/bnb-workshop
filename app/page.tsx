@@ -1,5 +1,6 @@
 import { CopyField } from "@/components/copy-field";
-import { copyLinks, steps, workshop } from "@/lib/content";
+import { InstallCommand } from "@/components/install-command";
+import { agentPrompt, claudeCodeAlt, steps, workshop } from "@/lib/content";
 
 export default function Home() {
   return (
@@ -35,23 +36,45 @@ export default function Home() {
         <section className="flex flex-col gap-6 rounded-xl border border-line bg-panel p-6 sm:p-8">
           <div className="flex flex-col gap-1">
             <h2 className="font-display text-lg font-semibold text-white">
-              Install the skill
+              Get started
             </h2>
             <p className="text-sm text-white/50">
-              Run these two commands in Claude Code before we begin.
+              Two steps, before we begin.
             </p>
           </div>
 
-          <div className="flex flex-col gap-6">
-            {copyLinks.map((link) => (
-              <CopyField
-                key={link.id}
-                label={link.label}
-                hint={link.hint}
-                value={link.value}
-              />
-            ))}
+          <div className="flex flex-col gap-8">
+            <InstallCommand />
+
+            <CopyField
+              multiline
+              label={agentPrompt.label}
+              hint={agentPrompt.hint}
+              value={agentPrompt.value}
+            />
           </div>
+
+          <details className="group border-t border-line pt-5">
+            <summary className="cursor-pointer list-none font-mono text-xs text-white/40 transition hover:text-white/70">
+              <span className="group-open:hidden">
+                + Using Claude Code? There&apos;s a native install too
+              </span>
+              <span className="hidden group-open:inline">
+                − Native Claude Code install
+              </span>
+            </summary>
+            <div className="flex flex-col gap-3 pt-4">
+              <p className="text-xs leading-relaxed text-white/40">
+                Installing as a plugin instead of a plain skill gets you
+                versioning and updates via{" "}
+                <code className="font-mono text-white/60">/plugin update</code>.
+                Run both in Claude Code, then{" "}
+                <code className="font-mono text-white/60">/reload-plugins</code>.
+              </p>
+              <CopyField value={claudeCodeAlt.marketplace} />
+              <CopyField value={claudeCodeAlt.install} />
+            </div>
+          </details>
         </section>
 
         <section className="flex flex-col gap-6">

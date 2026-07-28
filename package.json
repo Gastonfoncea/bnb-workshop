@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run pack-skill && next dev",
+    "pack-skill": "node scripts/pack-skill.mjs",
+    "prebuild": "npm run pack-skill",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

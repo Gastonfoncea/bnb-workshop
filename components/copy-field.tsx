@@ -3,14 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 
 type CopyFieldProps = {
-  label: string;
-  hint?: string;
   value: string;
+  label?: string;
+  hint?: string;
+  /** Render a wrapping textarea instead of a single line, for long prompts. */
+  multiline?: boolean;
 };
 
-export function CopyField({ label, hint, value }: CopyFieldProps) {
+const fieldStyles =
+  "w-full min-w-0 flex-1 resize-none rounded-lg border border-line bg-ink px-4 py-3 font-mono text-sm text-white/80 outline-none transition focus:border-bnb/60 focus:text-white";
+
+export function CopyField({ value, label, hint, multiline }: CopyFieldProps) {
   const [copied, setCopied] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const fieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -20,14 +25,12 @@ export function CopyField({ label, hint, value }: CopyFieldProps) {
   }, []);
 
   async function copy() {
-    const input = inputRef.current;
-
     try {
       await navigator.clipboard.writeText(value);
     } catch {
-      // Clipboard API needs a secure context — fall back to selecting the field.
-      input?.select();
-      input?.setSelectionRange(0, value.length);
+      // Clipboard API needs a secure context — fall back to selecting the text
+      // so the attendee can still copy it by hand.
+      fieldRef.current?.select();
     }
 
     setCopied(true);
@@ -37,24 +40,38 @@ export function CopyField({ label, hint, value }: CopyFieldProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-display text-sm font-semibold text-white">
-          {label}
-        </span>
-        {hint ? (
-          <span className="text-xs text-white/40">{hint}</span>
-        ) : null}
-      </div>
+      {label || hint ? (
+        <div className="flex flex-col gap-1">
+          {label ? (
+            <span className="font-display text-sm font-semibold text-white">
+              {label}
+            </span>
+          ) : null}
+          {hint ? <span className="text-xs text-white/40">{hint}</span> : null}
+        </div>
+      ) : null}
 
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <input
-          ref={inputRef}
-          readOnly
-          value={value}
-          aria-label={label}
-          onFocus={(e) => e.currentTarget.select()}
-          className="min-w-0 flex-1 truncate rounded-lg border border-line bg-ink px-4 py-3 font-mono text-sm text-white/80 outline-none transition focus:border-bnb/60 focus:text-white"
-        />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+        {multiline ? (
+          <textarea
+            ref={fieldRef as React.RefObject<HTMLTextAreaElement>}
+            readOnly
+            rows={3}
+            value={value}
+            aria-label={label ?? "Copyable text"}
+            onFocus={(e) => e.currentTarget.select()}
+            className={`${fieldStyles} leading-relaxed`}
+          />
+        ) : (
+          <input
+            ref={fieldRef as React.RefObject<HTMLInputElement>}
+            readOnly
+            value={value}
+            aria-label={label ?? "Copyable text"}
+            onFocus={(e) => e.currentTarget.select()}
+            className={`${fieldStyles} truncate`}
+          />
+        )}
         <button
           type="button"
           onClick={copy}
