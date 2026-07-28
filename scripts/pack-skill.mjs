@@ -2,6 +2,7 @@
 // Runs on every build, so the tarball can never drift from plugins/.
 import { execFileSync } from "node:child_process";
 import { mkdirSync, rmSync, statSync } from "node:fs";
+
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,15 +20,22 @@ if (!statSync(join(skillParent, SKILL)).isDirectory()) {
 mkdirSync(dirname(archive), { recursive: true });
 rmSync(archive, { force: true });
 
+// Anything a tool might drop into the skill directory while developing. A
+// pytest run once shipped .pytest_cache/ to every attendee's machine.
+const EXCLUDES = [
+  "__pycache__",
+  "*.pyc",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".mypy_cache",
+  ".venv",
+  ".DS_Store",
+];
+
 execFileSync(
   "tar",
   [
-    "--exclude",
-    "__pycache__",
-    "--exclude",
-    "*.pyc",
-    "--exclude",
-    ".DS_Store",
+    ...EXCLUDES.flatMap((pattern) => ["--exclude", pattern]),
     "-czf",
     archive,
     "-C",
@@ -41,5 +49,26 @@ execFileSync(
   },
 );
 
+// Belt and braces: the exclude list only catches what we thought to name, so
+// reject any dotfile or dot-directory that made it in regardless.
+const entries = execFileSync("tar", ["-tzf", archive], { encoding: "utf8" })
+  .split("\n")
+  .filter(Boolean);
+
+const unexpected = entries.filter((entry) =>
+  entry
+    .split("/")
+    .some((segment) => segment.startsWith(".") && segment !== ""),
+);
+
+if (unexpected.length > 0) {
+  rmSync(archive, { force: true });
+  throw new Error(
+    `Refusing to ship hidden files in the skill archive:\n  ${unexpected.join("\n  ")}`,
+  );
+}
+
 const kb = (statSync(archive).size / 1024).toFixed(1);
-console.log(`packed ${SKILL} -> public/${SKILL}.tar.gz (${kb} KB)`);
+console.log(
+  `packed ${SKILL} -> public/${SKILL}.tar.gz (${kb} KB, ${entries.length} entries)`,
+);
