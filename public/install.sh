@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # Installs the create-bnb-agent workshop skill for Claude Code, Codex and Cursor.
 #
-#   curl -fsSL https://bnb-workshop.vercel.app/install.sh | sh
+#   curl -fsSL https://bnb-workshop-red.vercel.app/install.sh | sh
 #
 # Designed to be piped: it downloads the skill rather than reading files next to
 # itself, because a piped script has no directory of its own.
@@ -12,7 +12,7 @@
 set -eu
 
 SKILL="create-bnb-agent"
-BASE_URL="${BNB_SKILL_BASE_URL:-https://bnb-workshop.vercel.app}"
+BASE_URL="${BNB_SKILL_BASE_URL:-https://bnb-workshop-red.vercel.app}"
 ARCHIVE_URL="$BASE_URL/$SKILL.tar.gz"
 
 target="auto"

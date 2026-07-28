@@ -1,6 +1,6 @@
 # Installs the create-bnb-agent workshop skill for Claude Code, Codex and Cursor.
 #
-#   irm https://bnb-workshop.vercel.app/install.ps1 | iex
+#   irm https://bnb-workshop-red.vercel.app/install.ps1 | iex
 #
 # No param() block on purpose: `iex` evaluates the script as a string and cannot
 # forward arguments to it. Configure with environment variables instead:
@@ -10,7 +10,7 @@
 $ErrorActionPreference = "Stop"
 
 $skill = "create-bnb-agent"
-$baseUrl = if ($env:BNB_SKILL_BASE_URL) { $env:BNB_SKILL_BASE_URL } else { "https://bnb-workshop.vercel.app" }
+$baseUrl = if ($env:BNB_SKILL_BASE_URL) { $env:BNB_SKILL_BASE_URL } else { "https://bnb-workshop-red.vercel.app" }
 $target = if ($env:BNB_SKILL_TARGET) { $env:BNB_SKILL_TARGET } else { "auto" }
 $homePath = $env:USERPROFILE
 

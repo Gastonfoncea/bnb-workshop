@@ -1,4 +1,4 @@
-export const SITE_URL = "https://bnb-workshop.vercel.app";
+export const SITE_URL = "https://bnb-workshop-red.vercel.app";
 
 export const workshop = {
   eyebrow: "BNB Chain · Workshop",
