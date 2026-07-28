@@ -185,6 +185,31 @@ Send `message/send` with a DataPart:
 Require a successful response containing the configured price and a non-empty
 provider signature. This quote path needs no LLM funds.
 
+### 6b. Smoke-test the product
+
+The A2A test above proves the protocol. It proves nothing about whether the
+agent does its job. Run the work hook too, so the participant sees their own
+deliverable before any funding exists:
+
+```text
+python <skill>/scripts/product_smoke_test.py --project-root . \
+  --task "<a concrete request for this agent, in its own domain>"
+```
+
+Choose a `--task` that exercises the participant's actual function, with real
+input where the function needs one. Report the deliverable.
+
+Exit codes: `0` deliverable produced, `1` setup problem, `2` the free model's
+daily request cap is spent. On `2`, say plainly that the hook is built correctly
+and the cap resets — it is not a defect in their agent.
+
+Judge the deliverable, do not just confirm it is non-empty. Verify every number
+it prints against the chain data it came from. A language model routinely
+misscales integer arithmetic (wei to whole tokens is the common failure), so any
+figure the model computed itself is suspect. If the work hook lets the LLM do
+arithmetic on money or token amounts, move that computation into fixed code in
+`seller_core.py` and pass the resolved values into the prompt.
+
 ### 7. Faucet checkpoint
 
 Check the public wallet's BSC Testnet balance. If it lacks gas:
@@ -216,6 +241,8 @@ End with compact bullets:
 - Intended 48-hour platform destination.
 - Dependency status.
 - Local endpoint and health/quote smoke-test results.
+- Product smoke-test result: the deliverable the agent actually produced, and
+  any figure in it that failed verification against chain data.
 - Faucet/funding state.
 - Current readiness and exact next action.
 - Change later: price/model/storage/network/destination file or command.
