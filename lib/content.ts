@@ -13,7 +13,10 @@ export const copyLinks = [
     id: "marketplace",
     label: "1 · Add the workshop marketplace",
     hint: "Paste into Claude Code.",
-    value: "/plugin marketplace add Gastonfoncea/bnb-workshop",
+    // Full HTTPS URL on purpose: the `owner/repo` shorthand clones over SSH,
+    // which fails for anyone without GitHub SSH keys set up.
+    value:
+      "/plugin marketplace add https://github.com/Gastonfoncea/bnb-workshop.git",
   },
   {
     id: "install",
