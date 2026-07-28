@@ -35,10 +35,10 @@ export default function Home() {
         <section className="flex flex-col gap-6 rounded-xl border border-line bg-panel p-6 sm:p-8">
           <div className="flex flex-col gap-1">
             <h2 className="font-display text-lg font-semibold text-white">
-              Start here
+              Install the skill
             </h2>
             <p className="text-sm text-white/50">
-              Copy these two links before we begin.
+              Run these two commands in Claude Code before we begin.
             </p>
           </div>
 

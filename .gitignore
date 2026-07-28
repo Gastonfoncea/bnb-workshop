@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python bytecode from the bundled workshop skill
+__pycache__/
+*.py[cod]

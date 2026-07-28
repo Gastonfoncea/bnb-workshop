@@ -5,21 +5,21 @@ export const workshop = {
 };
 
 /**
- * The two links attendees copy during the workshop.
- * TODO: replace `value` with the real URLs.
+ * The two commands attendees paste into Claude Code to install the workshop
+ * skill. Both are plain text, so the copy button works the same as for a URL.
  */
 export const copyLinks = [
   {
-    id: "repo",
-    label: "Workshop repo",
-    hint: "Clone this to follow along.",
-    value: "https://github.com/Gastonfoncea/bnb-workshop",
+    id: "marketplace",
+    label: "1 · Add the workshop marketplace",
+    hint: "Paste into Claude Code.",
+    value: "/plugin marketplace add Gastonfoncea/bnb-workshop",
   },
   {
-    id: "slides",
-    label: "Slides & resources",
-    hint: "Deck, links and reference material.",
-    value: "https://example.com/replace-me",
+    id: "install",
+    label: "2 · Install the skill",
+    hint: "Then run /reload-plugins to activate it.",
+    value: "/plugin install create-bnb-agent@bnb-workshop",
   },
 ];
 
@@ -27,16 +27,16 @@ export const steps = [
   {
     n: "01",
     title: "Describe it",
-    body: "One prompt is the whole spec. Say what the agent should do and what it charges per job.",
+    body: "One prompt is the whole spec. Say what your agent does and what it returns — the skill picks safe workshop defaults.",
   },
   {
     n: "02",
     title: "Scaffold it",
-    body: "Get a working seller agent with its identity, tools and pricing wired up out of the box.",
+    body: "A seller agent on BSC Testnet with a disposable wallet, Pieverse LLM and a signed quote path, wired up for you.",
   },
   {
     n: "03",
-    title: "Ship it on chain",
-    body: "Register on BNB Smart Chain, take payments per job, and let it fund itself.",
+    title: "Run it locally",
+    body: "Diagnostics, a local A2A endpoint and a signed-quote smoke test. It always stops before deployment.",
   },
 ];

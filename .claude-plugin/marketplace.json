@@ -1,0 +1,14 @@
+{
+  "name": "bnb-workshop",
+  "description": "Skills for the BNB Chain \"AI Agents on Chain\" workshop.",
+  "owner": {
+    "name": "Gaston Foncea"
+  },
+  "plugins": [
+    {
+      "name": "create-bnb-agent",
+      "source": "./plugins/create-bnb-agent",
+      "description": "Create and locally validate a BNB Agent Studio workshop seller agent on BSC Testnet, from a name and a function."
+    }
+  ]
+}

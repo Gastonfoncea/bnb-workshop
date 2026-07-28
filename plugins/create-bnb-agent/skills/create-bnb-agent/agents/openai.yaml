@@ -1,0 +1,6 @@
+interface:
+  display_name: "Create BNB Workshop Agent"
+  short_description: "Build and test a BNB seller agent locally"
+  default_prompt: "Use $create-bnb-agent to create a workshop seller agent that analyzes BNB wallets."
+policy:
+  allow_implicit_invocation: true
