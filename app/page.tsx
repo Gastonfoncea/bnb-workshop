@@ -18,9 +18,9 @@ export default function Home() {
         </span>
         <Link
           href="/slides"
-          className="rounded-full border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-white/50 transition-colors hover:border-bnb hover:text-bnb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb"
+          className="rounded-lg bg-bnb px-4 py-2 font-display text-sm font-semibold text-black transition-colors hover:bg-bnb-bright focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb"
         >
-          Qué vamos a hacer
+          Ver las slides
         </Link>
       </header>
 
@@ -40,10 +40,10 @@ export default function Home() {
         <section className="flex flex-col gap-6 rounded-xl border border-line bg-panel p-6 sm:p-8">
           <div className="flex flex-col gap-1">
             <h2 className="font-display text-lg font-semibold text-white">
-              Get started
+              Para empezar
             </h2>
             <p className="text-sm text-white/50">
-              Two steps, before we begin.
+              Dos pasos, antes de arrancar.
             </p>
           </div>
 
@@ -61,18 +61,18 @@ export default function Home() {
           <details className="group border-t border-line pt-5">
             <summary className="cursor-pointer list-none font-mono text-xs text-white/40 transition hover:text-white/70">
               <span className="group-open:hidden">
-                + Using Claude Code? There&apos;s a native install too
+                + ¿Usás Claude Code? Hay una instalación nativa
               </span>
               <span className="hidden group-open:inline">
-                − Native Claude Code install
+                − Instalación nativa en Claude Code
               </span>
             </summary>
             <div className="flex flex-col gap-3 pt-4">
               <p className="text-xs leading-relaxed text-white/40">
-                Installing as a plugin instead of a plain skill gets you
-                versioning and updates via{" "}
+                Instalarla como plugin en vez de skill suelta te da versionado y
+                actualizaciones con{" "}
                 <code className="font-mono text-white/60">/plugin update</code>.
-                Run both in Claude Code, then{" "}
+                Corré los dos comandos en Claude Code y después{" "}
                 <code className="font-mono text-white/60">/reload-plugins</code>.
               </p>
               <CopyField value={claudeCodeAlt.marketplace} />
@@ -83,7 +83,7 @@ export default function Home() {
 
         <section className="flex flex-col gap-6">
           <h2 className="font-mono text-xs uppercase tracking-widest text-white/40">
-            What we&apos;re building
+            Qué vamos a construir
           </h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {steps.map((step) => (

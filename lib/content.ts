@@ -2,8 +2,8 @@ export const SITE_URL = "https://bnb-workshop-red.vercel.app";
 
 export const workshop = {
   eyebrow: "BNB Chain · Workshop",
-  title: "AI Agents on Chain",
-  lede: "Build and deploy autonomous, self-funding AI agents that live on BNB Smart Chain — from a single prompt.",
+  title: "Agentes de IA on-chain",
+  lede: "Construí y desplegá agentes autónomos que viven en BNB Smart Chain, cobran por su trabajo y se financian solos — a partir de una sola frase.",
 };
 
 /**
@@ -29,10 +29,10 @@ export const installCommands = [
  * every other setting itself.
  */
 export const agentPrompt = {
-  label: "2 · Tell your agent what to build",
-  hint: "Restart your assistant first. Edit the name and the job — the skill asks for anything it still needs.",
+  label: "2 · Decile qué agente querés",
+  hint: "Reiniciá tu asistente primero. Cambiá el nombre y la función — la skill te pregunta lo que le falte.",
   value:
-    'Use the create-bnb-agent skill to create a workshop seller agent named "TxExplainer" that explains what a BNB Chain transaction did in plain English.',
+    'Usá la skill create-bnb-agent para crear un agente vendedor llamado "TxExplainer" que explique qué hizo una transacción de BNB Chain en lenguaje simple.',
 };
 
 export const claudeCodeAlt = {
@@ -43,17 +43,17 @@ export const claudeCodeAlt = {
 export const steps = [
   {
     n: "01",
-    title: "Describe it",
-    body: "One prompt is the whole spec. Say what your agent does and what it returns — the skill picks safe workshop defaults.",
+    title: "Describilo",
+    body: "Una frase es toda la especificación. Decí qué hace tu agente y qué entrega — la skill elige el resto de la configuración.",
   },
   {
     n: "02",
-    title: "Scaffold it",
-    body: "A seller agent on BSC Testnet with a disposable wallet, Pieverse LLM and a signed quote path, wired up for you.",
+    title: "Se arma solo",
+    body: "Un agente vendedor sobre BSC Testnet, con wallet descartable, LLM activado y su cotización firmada, todo cableado.",
   },
   {
     n: "03",
-    title: "Run it locally",
-    body: "Diagnostics, a local A2A endpoint and a signed-quote smoke test. It always stops before deployment.",
+    title: "Probalo local",
+    body: "Diagnóstico, endpoint A2A y una prueba del producto que entrega. Siempre frena antes de desplegar.",
   },
 ];

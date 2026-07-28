@@ -18,9 +18,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Agents on Chain — BNB Chain Workshop",
+  title: "Agentes de IA on-chain — Workshop BNB Chain",
   description:
-    "Workshop: build and deploy autonomous, self-funding AI agents that live on BNB Smart Chain — from a single prompt.",
+    "Workshop: construí y desplegá agentes autónomos que viven en BNB Smart Chain, cobran por su trabajo y se financian solos — a partir de una sola frase.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

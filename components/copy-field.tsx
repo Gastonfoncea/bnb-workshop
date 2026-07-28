@@ -58,7 +58,7 @@ export function CopyField({ value, label, hint, multiline }: CopyFieldProps) {
             readOnly
             rows={3}
             value={value}
-            aria-label={label ?? "Copyable text"}
+            aria-label={label ?? "Texto para copiar"}
             onFocus={(e) => e.currentTarget.select()}
             className={`${fieldStyles} leading-relaxed`}
           />
@@ -67,7 +67,7 @@ export function CopyField({ value, label, hint, multiline }: CopyFieldProps) {
             ref={fieldRef as React.RefObject<HTMLInputElement>}
             readOnly
             value={value}
-            aria-label={label ?? "Copyable text"}
+            aria-label={label ?? "Texto para copiar"}
             onFocus={(e) => e.currentTarget.select()}
             className={`${fieldStyles} truncate`}
           />
@@ -78,7 +78,7 @@ export function CopyField({ value, label, hint, multiline }: CopyFieldProps) {
           aria-live="polite"
           className="shrink-0 rounded-lg bg-bnb px-5 py-3 font-display text-sm font-semibold text-black transition hover:bg-bnb-bright active:scale-[0.98] sm:w-28"
         >
-          {copied ? "Copied ✓" : "Copy"}
+          {copied ? "Copiado ✓" : "Copiar"}
         </button>
       </div>
     </div>

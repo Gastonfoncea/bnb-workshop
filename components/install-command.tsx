@@ -13,17 +13,17 @@ export function InstallCommand() {
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <span className="font-display text-sm font-semibold text-white">
-          1 · Install the skill
+          1 · Instalá la skill
         </span>
         <span className="text-xs text-white/40">
-          Run it in your terminal. It installs into Claude Code, Codex or Cursor
-          — whichever you have.
+          Corrélo en tu terminal. Se instala en Claude Code, Codex o Cursor — el
+          que tengas.
         </span>
       </div>
 
       <div
         role="tablist"
-        aria-label="Operating system"
+        aria-label="Sistema operativo"
         className="flex w-fit gap-1 rounded-lg border border-line bg-ink p-1"
       >
         {installCommands.map((command) => {
