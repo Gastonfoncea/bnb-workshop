@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CopyField } from "@/components/copy-field";
 import { InstallCommand } from "@/components/install-command";
 import { agentPrompt, claudeCodeAlt, steps, workshop } from "@/lib/content";
@@ -15,9 +16,12 @@ export default function Home() {
         <span className="font-display text-sm font-semibold tracking-tight">
           BNB Agent Studio
         </span>
-        <span className="rounded-full border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-white/50">
-          Workshop
-        </span>
+        <Link
+          href="/slides"
+          className="rounded-full border border-line px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-white/50 transition-colors hover:border-bnb hover:text-bnb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb"
+        >
+          Qué vamos a hacer
+        </Link>
       </header>
 
       <main className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col gap-16 px-6 pb-24 pt-10 sm:pt-20">
