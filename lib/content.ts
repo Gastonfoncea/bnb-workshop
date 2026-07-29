@@ -39,45 +39,46 @@ export const agentPrompt = {
  * Ideas para quien no sabe qué pedir. Cada una es la frase que se copia tal
  * cual: elegir una card y pegarla es todo el trabajo de arranque.
  *
- * La proporción es deliberada — una sola usa la cadena. El resto son dominios
- * cualquiera, porque lo que BNB Chain aporta acá es el cobro y la identidad,
- * no el tema del trabajo. Cuatro variantes de análisis on-chain contarían la
- * historia más chica.
+ * El filtro no es el dominio, es si el stack se gana el lugar. Un agente que
+ * le vende a una persona con tarjeta es overkill — un endpoint común le gana
+ * en costo y en simpleza. Cada `tag` nombra la razón por la que ESE caso sí
+ * necesita wallet y escrow: comprador que es una máquina, ticket demasiado
+ * chico para una comisión de tarjeta, o partes que no se conocen.
  */
 export const agentExamples = [
   {
-    id: "tx",
-    name: "TxExplainer",
+    id: "guard",
+    name: "ContractGuard",
     tag: "Lee la cadena",
     useCase:
-      "Alguien ve un movimiento raro en su wallet y no entiende qué firmó. Le pasa el hash y el agente le devuelve, en castellano, qué contrato intervino, qué se movió y qué permisos quedaron abiertos.",
+      "Un agente autónomo está por interactuar con un contrato que no conoce. Antes de firmar nada te paga un chequeo: qué hace, qué permisos pide y qué señales de alarma tiene. Cobrás por consulta, en el momento, sin que ningún humano apruebe el pago.",
     prompt:
-      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "TxExplainer" que reciba el hash de una transacción de BNB Chain y explique en lenguaje simple qué hizo.',
+      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "ContractGuard" que reciba la dirección de un contrato de BNB Chain y devuelva qué hace, qué permisos pide y qué señales de alarma tiene.',
   },
   {
-    id: "stack",
-    name: "StackTraceExplainer",
-    tag: "Sólo texto",
+    id: "second",
+    name: "SecondOpinion",
+    tag: "Agente a agente",
     useCase:
-      "Un dev se come un error que no dice nada útil. Pega el stack trace y el agente le devuelve la causa probable, la línea sospechosa y qué conviene chequear primero. Sirve para cualquier lenguaje.",
+      "Otro agente terminó un informe y, antes de dárselo a su cliente, quiere que alguien independiente lo revise. Le devolvés los errores y las afirmaciones sin respaldo que encontraste. Son centavos por revisión: ningún banco abre una cuenta para eso, una wallet la tenés en diez segundos.",
     prompt:
-      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "StackTraceExplainer" que reciba un stack trace de cualquier lenguaje y devuelva la causa probable y qué chequear primero.',
+      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "SecondOpinion" que reciba el borrador de un informe y devuelva los errores, los huecos y las afirmaciones sin respaldo que encuentre.',
   },
   {
-    id: "reviews",
-    name: "ReviewMiner",
-    tag: "Devuelve JSON",
+    id: "triage",
+    name: "TicketTriage",
+    tag: "Micropago, alto volumen",
     useCase:
-      "Un e-commerce junta 400 reseñas y nadie las lee. El agente las procesa y devuelve JSON con los temas que se repiten y cuántas veces aparece cada uno — pensado para que lo consuma otro programa, no una persona.",
+      "Una empresa clasifica 4.000 tickets de soporte por día y no quiere entrenar un modelo propio. Te llama por cada uno y te paga por unidad. Con ese ticket promedio, la comisión de una tarjeta se comería el margen entero.",
     prompt:
-      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "ReviewMiner" que reciba un montón de reseñas en crudo y devuelva JSON con los temas recurrentes y su frecuencia.',
+      'Usá la skill create-bnb-agent para crear un agente vendedor llamado "TicketTriage" que reciba un ticket de soporte y devuelva su categoría, su urgencia y a qué equipo derivarlo.',
   },
   {
     id: "clause",
     name: "ClauseReviewer",
-    tag: "Sólo texto",
+    tag: "Sin confianza previa",
     useCase:
-      "Te pasan un contrato de alquiler o un acuerdo de servicio y lo ibas a firmar sin leerlo entero. El agente marca las cláusulas que conviene mirar dos veces y explica por qué cada una.",
+      "Un desconocido necesita que alguien revise un acuerdo hoy y no te va a adelantar plata. El escrow hace de contrato: la plata queda trabada hasta que entregás, y él tiene una ventana para reclamar si el trabajo es malo.",
     prompt:
       'Usá la skill create-bnb-agent para crear un agente vendedor llamado "ClauseReviewer" que reciba el texto de un contrato y señale las cláusulas que conviene revisar antes de firmar, explicando por qué.',
   },

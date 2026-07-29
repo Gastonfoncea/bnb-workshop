@@ -629,6 +629,35 @@ const slides: Slide[] = [
   },
   {
     section: "Qué queda afuera",
+    eyebrow: "Parte 2 · Cómo cobrás",
+    body: (
+      <>
+        <Title>El pago se puede deshacer</Title>
+        <Lede>
+          El escrow no te paga contra entrega. Te paga contra{" "}
+          <strong>silencio</strong>.
+        </Lede>
+        <Steps
+          items={[
+            "El comprador funda el trabajo: la plata queda trabada",
+            "Entregás, y el hash de tu entregable queda anclado on-chain",
+            <>
+              Se abre una <strong className="text-white">ventana de disputa</strong>
+            </>,
+            "Si nadie reclama, se aprueba solo y cobrás",
+          ]}
+        />
+        <Note tag="Por qué importa esto" tone="warn">
+          Toda esa maquinaria existe para poder{" "}
+          <strong>devolverle la plata</strong> al comprador si el trabajo estuvo
+          mal. Funciona cuando lo que entregaste se puede volver a leer y
+          juzgar.
+        </Note>
+      </>
+    ),
+  },
+  {
+    section: "Qué queda afuera",
     eyebrow: "Parte 2 · Antes de elegir tu función",
     body: (
       <>
@@ -636,34 +665,36 @@ const slides: Slide[] = [
         <Split>
           <Panel
             tone="in"
-            heading="Encaja"
+            heading="Te cubre el protocolo"
             items={[
-              "Explicar una transacción",
-              "Analizar una wallet o un contrato",
+              "Analizar un contrato o una wallet",
               "Resumir, traducir, auditar",
+              "Revisar el trabajo de otro agente",
               "Investigar y redactar un informe",
             ]}
             footer={
               <>
-                Entregan <strong className="text-white/70">un texto</strong> que
-                el comprador puede juzgar.
+                Dejan{" "}
+                <strong className="text-white/70">algo que se re-lee</strong>: es
+                justo lo que la ventana de disputa sabe arbitrar.
               </>
             }
           />
           <Panel
             tone="out"
-            heading="No encaja"
+            heading="Quedás expuesto"
             items={[
               "Ejecutar órdenes de trading",
-              "Mover fondos de terceros",
-              "Cualquier cosa que firme por vos",
+              "Mandar plata a un tercero",
+              "Cualquier cosa irreversible",
             ]}
             footer={
               <>
-                La arquitectura{" "}
-                <strong className="text-white/70">lo impide a propósito</strong>
-                : el modelo no tiene ninguna herramienta que escriba en la
-                cadena.
+                No es que no puedas:{" "}
+                <strong className="text-white/70">
+                  el protocolo revierte el pago, no la acción
+                </strong>
+                .
               </>
             }
           />
@@ -678,15 +709,16 @@ const slides: Slide[] = [
       <>
         <Title>“¿Y si hago uno que opere?”</Title>
         <Lede>
-          Se puede vender <strong>análisis</strong> de trading. No se puede
-          vender <strong>ejecución</strong>. Y no es una cuestión de criterio.
+          Podés. El hook donde va tu función es Python común: nadie te impide
+          llamar a un exchange ahí adentro. La pregunta no es si se puede — es{" "}
+          <strong>quién come el riesgo</strong>.
         </Lede>
         <Bullets
           items={[
             <>
-              El modelo cobra por <em>entregar un trabajo</em>: hay un
-              entregable que se evalúa y una ventana de disputa. Una orden
-              ejecutada no tiene eso
+              Si ya mandaste la orden y el comprador disputa, le devuelven el
+              escrow <em>y se queda con la posición</em>. Vos ejecutaste, pagaste
+              el gas y cobrás cero
             </>,
             <>
               La wallet del agente es la que <em>cobra</em>. Mezclarla con una
@@ -696,8 +728,9 @@ const slides: Slide[] = [
           ]}
         />
         <Note tag="La versión que sí funciona">
-          “Analizá este par y entregame una tesis con niveles y riesgos.” Texto,
-          verificable, sin tocar fondos.
+          “Analizá este par y entregame una tesis con niveles y riesgos.” Se
+          re-lee, se discute, y si está mal el arbitraje tiene sobre qué
+          decidir.
         </Note>
       </>
     ),
@@ -793,7 +826,11 @@ const slides: Slide[] = [
               Una forma de <strong>probarlo sin plata</strong>, hoy, en tu
               máquina
             </>,
-            <>Y el motivo por el que la plata nunca pasa por el modelo</>,
+            <>
+              Y el criterio para saber{" "}
+              <strong>qué conviene vender</strong>: lo que se puede volver a
+              juzgar
+            </>,
           ]}
         />
         <div className="h-px w-full bg-line" />

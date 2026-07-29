@@ -88,9 +88,10 @@ export default function Home() {
               Qué podrías construir
             </h2>
             <p className="max-w-xl text-sm leading-relaxed text-white/50">
-              El trabajo puede ser cualquier cosa — sólo una de estas lee la
-              cadena. Lo que BNB Chain aporta es que tu agente cobre solo, sin
-              banco y sin que nadie apruebe nada. Copiá una frase y arrancá.
+              No cualquier tarea merece un agente que cobra on-chain: si tu
+              comprador es una persona con tarjeta, un endpoint común te gana.
+              Estos cuatro son casos donde la wallet y el escrow sí se ganan el
+              lugar. Copiá una frase y arrancá.
             </p>
           </div>
           <ExampleCards />
