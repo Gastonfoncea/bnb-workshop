@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 
@@ -968,9 +969,21 @@ export function SlideDeck() {
 
       {/* chrome */}
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-4 border-t border-line bg-ink/85 px-4 py-2.5 backdrop-blur sm:px-6">
-        <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-white/35">
-          {slide.section}
-        </span>
+        {/* Mirrors the landing header's "Ver las slides" so the two pages link
+            back to each other. Labelled rather than a bare arrow: the deck's own
+            ← lives on the other end of this same bar. */}
+        <div className="flex min-w-0 items-center gap-3">
+          <Link
+            href="/"
+            className="shrink-0 rounded font-mono text-[11px] uppercase tracking-[0.14em] text-white/50 transition-colors hover:text-bnb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb"
+          >
+            ← Inicio
+          </Link>
+          <span aria-hidden className="h-3 w-px shrink-0 bg-line" />
+          <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-white/35">
+            {slide.section}
+          </span>
+        </div>
 
         <div className="flex shrink-0 items-center gap-2">
           <button
