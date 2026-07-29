@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CopyField } from "@/components/copy-field";
+import { ExampleCards } from "@/components/example-cards";
 import { InstallCommand } from "@/components/install-command";
 import { agentPrompt, claudeCodeAlt, steps, workshop } from "@/lib/content";
 
@@ -82,8 +83,22 @@ export default function Home() {
         </section>
 
         <section className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-white/40">
+              Qué podrías construir
+            </h2>
+            <p className="max-w-xl text-sm leading-relaxed text-white/50">
+              El trabajo puede ser cualquier cosa — sólo una de estas lee la
+              cadena. Lo que BNB Chain aporta es que tu agente cobre solo, sin
+              banco y sin que nadie apruebe nada. Copiá una frase y arrancá.
+            </p>
+          </div>
+          <ExampleCards />
+        </section>
+
+        <section className="flex flex-col gap-6">
           <h2 className="font-mono text-xs uppercase tracking-widest text-white/40">
-            Qué vamos a construir
+            Cómo funciona
           </h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {steps.map((step) => (
