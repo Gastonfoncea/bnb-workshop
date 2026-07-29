@@ -1,24 +1,25 @@
 ---
 name: create-bnb-agent
-description: Create and locally validate a BNB Agent Studio workshop seller agent from a name and function. Use when a participant asks to create, scaffold, or build an on-chain BNB agent for the workshop. Installs missing prerequisites when safely possible, creates a disposable testnet wallet, activates Pieverse, implements the work hook, smoke-tests A2A, pauses for faucet funding, and always stops before deployment.
+description: Create and locally validate a BNB Agent Studio workshop seller agent from a name and function. Use when a participant asks to create, scaffold, or build an on-chain BNB agent for the workshop. Installs missing prerequisites when safely possible, creates a disposable testnet wallet, activates Pieverse, implements the work hook, smoke-tests both the protocol and the product, then offers a keep-it-local or publish-it choice and never deploys without one.
 ---
 
 # Create BNB Workshop Agent
 
 Create a re-entrant BSC Testnet seller agent. Ask only for missing intake data,
-then proceed autonomously. Never deploy.
+then proceed autonomously to a working local agent. Deploy only when the
+participant picks it at the phase-8 fork.
 
 ## Fixed workshop choices
 
 - Price: `0.1 U` (`100000000000000000` wei).
 - Price bounds: min `0`, max `100000000000000000`.
-- Network: `bsc-testnet`.
+- Network: `bsc-testnet`. Never mainnet.
 - Protocol: `A2A`.
 - Framework/runtime: Google ADK on AWS AgentCore.
 - LLM: Pieverse `auto/free`, zero initial allocation.
 - Wallet: disposable `evm-local`.
-- Storage: `local` (not durable across runtime restarts).
-- Future destination: managed `platform` 48-hour testnet trial.
+- Storage: `local` while building — `ipfs` only if they choose to publish.
+- Destination: managed `platform` 48-hour testnet trial.
 
 ## Intake
 
@@ -32,7 +33,10 @@ destination. State the sanitized AgentCore name if it differs from the answer.
 
 ## Safety invariants
 
-- Never run `bag deploy`, register ERC-8004, or change to mainnet.
+- Never deploy or register ERC-8004 until the participant has explicitly chosen
+  to publish at the phase-8 fork. Never change to mainnet at all.
+- Before any deploy, state plainly that the wallet's key is transmitted to the
+  operator, and that this is why the workshop wallet is disposable.
 - Never print a private key or `WALLET_PASSWORD`.
 - Keep `.studio/wallets/` at the workspace root and outside `app/agent/`.
 - Store the generated testnet password only in `.studio/.env.local`; ensure
@@ -153,6 +157,11 @@ bag dev
 Fix deterministic local failures. Do not bypass security or storage checks.
 Wait for `GET http://127.0.0.1:9000/ping`.
 
+If port 9000 is already taken, another agent from an earlier session owns it —
+verify with the agent card whose it is, leave it running, and start this one on
+another port (`bag dev --port 9010`). Use that port for the rest of the checks
+so a passing smoke test can never be another agent answering.
+
 ### 6. Smoke-test A2A
 
 Send `message/send` with a DataPart:
@@ -210,22 +219,63 @@ figure the model computed itself is suspect. If the work hook lets the LLM do
 arithmetic on money or token amounts, move that computation into fixed code in
 `seller_core.py` and pass the resolved values into the prompt.
 
-### 7. Faucet checkpoint
+### 7. Funding check — report, do not block
 
-Check the public wallet's BSC Testnet balance. If it lacks gas:
+Check the public wallet's BSC Testnet balance and report it. Gas is NOT required
+to finish this skill: everything up to here — quoting, signing, and the product
+smoke test — works with an empty wallet.
 
-- Keep the local agent and wallet unchanged.
-- Show the public address and BNB Testnet faucet action.
-- Stop and tell the participant to rerun this skill after funding.
+If there is no gas, say what it unlocks rather than stopping:
 
-On rerun, detect the existing wallet, verify funding, rerun diagnostics and the
-smoke test, then report readiness.
+- Show the public address and the BNB Testnet faucet.
+- Explain that gas only matters for on-chain actions: escrow, delivery, and
+  publishing.
+- Continue to phase 8 regardless.
 
-### 8. Stop before deployment
+Mention that the escrow itself is paid in the payment token (`U`), not in BNB —
+BNB is only gas. A buyer needs `U` before any job can be funded.
 
-Always stop before deployment, even when every check passes. Explain that local
-storage is workshop-only and not durable. A later explicit user request is
-required to authenticate and deploy to the managed 48-hour trial.
+### 8. The fork: keep it local, or publish
+
+The agent is built and tested. Ask ONE question, then stop and wait:
+
+> **Do you want to keep this local, or publish it?**
+>
+> **Local** — you can run it, get signed quotes, and see the deliverable it
+> produces. Nobody else can reach it or buy from it. Nothing more to set up.
+>
+> **Publish** — it goes live for 48 hours and anyone can hire it. You'll need
+> three things: a Pinata API key (free, ~5 minutes), testnet gas, and a
+> platform account.
+
+Do not deploy on your own initiative. Do not ask this question earlier — storage
+is two config values and is trivially changed after the fact, so there is no
+reason to make them decide before they have something that works.
+
+**If they choose local**, finish here. State what they can already do, and that
+publishing later is this same fork plus a Pinata key.
+
+**If they choose publish**, walk them through it. Do not make them research IPFS
+— only the key is theirs to fetch; write the rest yourself:
+
+1. Explain Pinata in one sentence: deliverables live off-chain and only their
+   hash goes on-chain, so a published agent needs somewhere the buyer can
+   actually read them from. `local` writes to a disk only this container sees.
+2. Ask them for a Pinata JWT (pinata.cloud → API Keys). Wait for it.
+3. Write to `.studio/.env.local` — never echo the key back:
+   - `STORAGE_API_KEY=<their JWT>`
+   - `STORAGE_API_URL=https://api.pinata.cloud/pinning/pinJSONToIPFS`
+   - `STORAGE_GATEWAY_URL=https://gateway.pinata.cloud/ipfs/`
+4. Set `[storage].kind = "ipfs"` in `app/agent/studio.toml`.
+5. Have them sign in to the platform, then run `bag deploy prepare` and fix what
+   it reports.
+6. Deploy, then verify the endpoint answers.
+
+Registering ERC-8004 is optional and makes the agent discoverable on-chain.
+Offer it, note that it costs gas, and only run it if they say yes.
+
+After deploying, tell them plainly: the trial is reclaimed at 48 hours, and a
+buyer still needs `U` to fund a job — being live is not the same as being paid.
 
 ## Final report
 
@@ -237,15 +287,19 @@ End with compact bullets:
 - Network, protocol, framework, runtime.
 - Wallet kind and public address.
 - LLM provider/model and activation state.
-- Storage and its non-durability.
-- Intended 48-hour platform destination.
+- Storage kind, and what it implies: `local` means only this machine can read
+  the deliverables, so it is fine to build on and impossible to publish with.
 - Dependency status.
 - Local endpoint and health/quote smoke-test results.
 - Product smoke-test result: the deliverable the agent actually produced, and
   any figure in it that failed verification against chain data.
-- Faucet/funding state.
+- Gas balance, and that escrow is paid in `U` rather than BNB.
 - Current readiness and exact next action.
 - Change later: price/model/storage/network/destination file or command.
+
+If they published, also report the live endpoint, that the trial expires in 48
+hours, and whether ERC-8004 was registered. If they kept it local, state in one
+line what publishing later would take.
 
 Then add only these informational mainnet bullets:
 

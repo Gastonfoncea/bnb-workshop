@@ -286,10 +286,10 @@ const slides: Slide[] = [
             "Fija el precio e implementa tu función",
             "Corre el diagnóstico y levanta el agente local",
             "Prueba el protocolo y el producto que entrega",
-            "Chequea si tenés gas, y te avisa si falta",
+            "Chequea el gas y te dice qué desbloquea",
             <>
-              <strong className="text-white">Frena antes del deploy.</strong>{" "}
-              Siempre.
+              <strong className="text-white">Te pregunta una sola cosa:</strong>{" "}
+              ¿local o publicado?
             </>,
           ]}
         />
@@ -409,32 +409,76 @@ const slides: Slide[] = [
             footer="Los faucets son lentos y tienen límite por dirección. Por eso está fuera del camino crítico."
           />
         </Split>
-        <Note tag="Si trajiste BNB de mainnet">
-          Podés desplegar de verdad. Usá una{" "}
-          <strong>wallet nueva, nunca la del workshop</strong>: la del workshop
-          es descartable y su clave ya viajó.
+        <Note tag="Ojo con esto">
+          El BNB es <strong>sólo gas</strong>. El escrow se paga en{" "}
+          <Code>U</Code>, que es otro token: tener BNB no alcanza para que
+          alguien te compre.
         </Note>
       </>
     ),
   },
   {
     section: "Qué queda afuera",
-    eyebrow: "Parte 2 · Antes de desplegar",
+    eyebrow: "Parte 2 · La única pregunta que te va a hacer",
     body: (
       <>
-        <Title>Dónde se configura el storage</Title>
+        <Title>¿Local o publicado?</Title>
+        <Lede>
+          Cuando tu agente ya funciona, la skill te pregunta una sola cosa. No
+          antes: cambiar esto después son dos líneas de config.
+        </Lede>
+        <Split>
+          <Panel
+            tone="in"
+            heading="Local"
+            items={[
+              "Corrés el agente en tu máquina",
+              "Cotiza y firma de verdad",
+              "Ves el entregable que produce",
+              "Nadie de afuera puede comprarte",
+            ]}
+            footer="No hay nada más que configurar."
+          />
+          <Panel
+            tone="out"
+            heading="Publicado · 48 h"
+            items={[
+              "Queda vivo y cualquiera lo contrata",
+              "Necesitás una API key de Pinata",
+              "Gas de testnet",
+              "Cuenta en la plataforma",
+            ]}
+            footer="La skill escribe la config; vos sólo pegás la key."
+          />
+        </Split>
+      </>
+    ),
+  },
+  {
+    section: "Qué queda afuera",
+    eyebrow: "Parte 2 · Si elegís publicar",
+    body: (
+      <>
+        <Title>Qué es Pinata y por qué</Title>
+        <Lede>
+          En la cadena sólo se guarda el <strong>hash</strong> de tu entregable —
+          el archivo vive afuera. Pinata es donde vive, para que el comprador
+          pueda leerlo.
+        </Lede>
         <Terminal>
           <Dim># app/agent/studio.toml</Dim>
           {"\n"}[storage]{"\n"}kind = <Gold>&quot;ipfs&quot;</Gold>{" "}
-          <Dim># en el workshop viene &quot;local&quot;</Dim>
+          <Dim># mientras construís es &quot;local&quot;</Dim>
           {"\n\n"}
-          <Dim># y su endpoint, en .studio/.env.local</Dim>
-          {"\n"}STORAGE_API_URL=…
+          <Dim># .studio/.env.local — dos son fijos, uno es tuyo</Dim>
+          {"\n"}STORAGE_API_URL=https://api.pinata.cloud/…{"\n"}
+          STORAGE_GATEWAY_URL=https://gateway.pinata.cloud/…{"\n"}
+          STORAGE_API_KEY=<Gold>tu JWT</Gold>
         </Terminal>
         <Lede>
-          El comprador lee tu entregable <strong>desde la cadena</strong>. Con
-          storage <Code>local</Code> esa dirección apunta a un disco que sólo ve
-          tu máquina — por eso un agente publicado no arranca así.
+          Con <Code>local</Code> el entregable queda en un disco que sólo ve tu
+          contenedor: el comprador recibe una dirección que no puede abrir. Por
+          eso publicar así está bloqueado.
         </Lede>
       </>
     ),
@@ -522,14 +566,18 @@ const slides: Slide[] = [
         <Title>Cómo seguir solo</Title>
         <Steps
           items={[
-            "Conseguí gas de testnet si querés cerrar el ciclo económico",
-            "Probalo con una segunda wallet actuando de compradora",
+            "Conseguí gas de testnet para las operaciones on-chain",
             <>
-              Configurá storage durable: <Code>kind = &quot;ipfs&quot;</Code> y
-              su endpoint
+              Conseguí <Code>U</Code> de testnet para la wallet que va a
+              comprar — el escrow no se paga en BNB
+            </>,
+            <>
+              Sacá una API key de Pinata y pasá el storage a{" "}
+              <Code>ipfs</Code>
             </>,
             "Iniciá sesión en la plataforma y corré el chequeo de pre-deploy",
             "Desplegá al trial de 48 horas y verificá que responde",
+            "Registrá el agente en ERC-8004 si querés que sea descubrible",
           ]}
         />
         <Lede>
