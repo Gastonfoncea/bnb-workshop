@@ -227,13 +227,26 @@ smoke test — works with an empty wallet.
 
 If there is no gas, say what it unlocks rather than stopping:
 
-- Show the public address and the BNB Testnet faucet.
+- Name the thing they need — testnet BNB for gas — and give the faucet as the
+  place to get it. Do not say they "need a faucet": the faucet is the tap, the
+  gas is what is missing.
 - Explain that gas only matters for on-chain actions: escrow, delivery, and
   publishing.
 - Continue to phase 8 regardless.
 
-Mention that the escrow itself is paid in the payment token (`U`), not in BNB —
-BNB is only gas. A buyer needs `U` before any job can be funded.
+Be precise about who pays what, because the `U` balance warning in `bag doctor`
+reads as if the seller needs `U` to trade. It does not:
+
+- This agent is the SELLER. It only ever spends gas (submit, and settle if the
+  operator runs it). It never needs `U` to earn — it RECEIVES `U` when a job
+  completes.
+- The escrow is funded by the BUYER, in `U`. `create_job` / `set_budget` /
+  `fund` are all client-side calls.
+- So testing the full economic loop alone needs a SECOND wallet holding `U` to
+  act as the buyer. The seller's own wallet needs nothing but gas.
+
+The `U` figure `bag doctor` warns about is for optional paid LLM credits, not
+for selling — and on `auto/free` with auto-topup disabled it is not needed.
 
 ### 8. The fork: keep it local, or publish
 

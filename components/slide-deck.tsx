@@ -246,8 +246,8 @@ const slides: Slide[] = [
           ))}
         </div>
         <Lede>
-          Al final vas a poder probar tu agente sin gastar un centavo ni esperar
-          un faucet.
+          Al final vas a poder probar tu agente sin gastar un centavo ni pedirle
+          tokens a nadie.
         </Lede>
       </>
     ),
@@ -333,7 +333,7 @@ const slides: Slide[] = [
         </Terminal>
         <Lede>
           Corre tu función real contra el LLM y te imprime el entregable —{" "}
-          <strong>sin escrow, sin faucet, sin comprador</strong>. Es la forma de
+          <strong>sin escrow, sin fondos, sin comprador</strong>. Es la forma de
           ver tu agente haciendo lo suyo antes de tener un peso.
         </Lede>
         <Note tag="Qué devuelve">
@@ -359,19 +359,19 @@ const slides: Slide[] = [
               "Tu función implementada",
               "Cotización firmada verificable",
               "Prueba del producto sin fondos",
-              "Lectura de cadena ilimitada",
+              "Publicar 48 h y registrarlo, si elegís",
             ]}
           />
           <Panel
             tone="out"
             heading="Queda afuera"
             items={[
-              "Registro ERC-8004",
+              "El ciclo económico completo",
               "Compra de datos pagos (x402)",
               "OAuth y Cognito",
-              "El ciclo económico completo",
-              "Deploy, salvo que quieras y puedas",
+              "Mainnet, en cualquier forma",
             ]}
+            footer="El ciclo entero necesita un comprador con U — por eso lo muestra quien presenta."
           />
         </Split>
       </>
@@ -382,10 +382,10 @@ const slides: Slide[] = [
     eyebrow: "Parte 2 · Fondeo",
     body: (
       <>
-        <Title>El faucet es opcional</Title>
+        <Title>El gas es opcional</Title>
         <Lede>
-          Para <strong>armar el agente y probarlo</strong> no necesitás fondos.
-          El faucet recién hace falta si querés cerrar el ciclo económico.
+          Para <strong>armar el agente y probarlo</strong> no necesitás un peso.
+          El tBNB recién hace falta si querés cerrar el ciclo económico.
         </Lede>
         <Split>
           <Panel
@@ -406,13 +406,14 @@ const slides: Slide[] = [
               "Entregar contra la cadena",
               "Cobrar y liquidar",
             ]}
-            footer="Los faucets son lentos y tienen límite por dirección. Por eso está fuera del camino crítico."
+            footer="El tBNB se saca de un faucet — un grifo público que te regala tokens de prueba. Son lentos y limitan por dirección, y por eso esto queda fuera del camino crítico."
           />
         </Split>
         <Note tag="Ojo con esto">
-          El BNB es <strong>sólo gas</strong>. El escrow se paga en{" "}
-          <Code>U</Code>, que es otro token: tener BNB no alcanza para que
-          alguien te compre.
+          Vos como vendedor <strong>sólo necesitás gas</strong>. La{" "}
+          <Code>U</Code> la pone el <strong>comprador</strong> — y vos la
+          recibís al cobrar. Para probar el ciclo completo solo, necesitás una
+          segunda wallet con U que te compre.
         </Note>
       </>
     ),
@@ -564,26 +565,26 @@ const slides: Slide[] = [
     body: (
       <>
         <Title>Cómo seguir solo</Title>
+        <Lede>
+          Cuatro cosas que la skill no puede conseguir por vos. El resto lo hace
+          ella.
+        </Lede>
         <Steps
           items={[
-            "Conseguí gas de testnet para las operaciones on-chain",
+            "Una API key de Pinata, si vas a publicar — cinco minutos, gratis",
+            "tBNB para las operaciones on-chain de tu agente",
+            "Tu cuenta en la plataforma de BNB Chain",
             <>
-              Conseguí <Code>U</Code> de testnet para la wallet que va a
-              comprar — el escrow no se paga en BNB
+              Una segunda wallet con <Code>U</Code> que haga de compradora, si
+              querés cerrar el ciclo económico entero
             </>,
-            <>
-              Sacá una API key de Pinata y pasá el storage a{" "}
-              <Code>ipfs</Code>
-            </>,
-            "Iniciá sesión en la plataforma y corré el chequeo de pre-deploy",
-            "Desplegá al trial de 48 horas y verificá que responde",
-            "Registrá el agente en ERC-8004 si querés que sea descubrible",
           ]}
         />
-        <Lede>
-          Recién después tiene sentido pensar en mainnet — con una wallet nueva,
-          nunca la del workshop.
-        </Lede>
+        <Note tag="Y después">
+          Volvés a correr la skill y elegís publicar: escribe la config de
+          storage, corre el chequeo de pre-deploy, despliega y te ofrece
+          registrar el agente en ERC-8004 para que sea descubrible.
+        </Note>
       </>
     ),
   },
@@ -651,6 +652,10 @@ const slides: Slide[] = [
           El agente ya es un vendedor. Lo que falta es publicarlo — y eso ahora
           sabés exactamente cómo hacerlo.
         </Lede>
+        <Note tag="Si algún día vas a mainnet" tone="warn">
+          Creá una wallet nueva. La del workshop es descartable y su clave viaja
+          al operador cuando desplegás — nunca la reuses con plata real.
+        </Note>
       </>
     ),
   },
