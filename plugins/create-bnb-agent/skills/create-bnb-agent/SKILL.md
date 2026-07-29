@@ -21,6 +21,11 @@ participant picks it at the phase-8 fork.
 - Storage: `local` while building — `ipfs` only if they choose to publish.
 - Destination: managed `platform` 48-hour testnet trial.
 
+Gas rule for this path: scaffolding, quoting, signing, the product smoke test,
+and the platform deploy all cost nothing. The only command here that spends gas
+is `bag erc8004 register` (~0.002 tBNB). Say this once rather than hedging about
+funding at every step.
+
 ## Intake
 
 Ask one question at a time:
@@ -31,13 +36,40 @@ Ask one question at a time:
 Do not ask for price, network, wallet, model, protocol, storage, runtime, or
 destination. State the sanitized AgentCore name if it differs from the answer.
 
+## Teaching mode
+
+This runs in a workshop. The participant should be able to repeat every step
+alone a week later, so a command they never saw is a command they cannot rerun.
+Show the `bag` command you are about to run, say in one line what it is for, and
+after it returns say what the output means — not that it succeeded.
+
+Which commands you run, and which they run, follows from what the command does:
+
+- **Read-only** (`bag deploy info`, `bag platform agents`, `bag platform credit`,
+  `bag erc8004 show`, `bag wallet balance`, `bag doctor`): run them yourself and
+  narrate. Never just report "OK" — read the relevant field out loud.
+- **Interactive** (`bag platform login`): you cannot run it for them. It needs
+  their browser and their GitHub account. Give the command, explain what they
+  are authorizing, and wait.
+- **Spends gas, or is irreversible** (`bag deploy agent`, `bag erc8004 register`,
+  `bag platform invoke-client new`): explain the cost or consequence first, ask,
+  and only then run it.
+
+Explain a concept the first time its command appears, not before. A participant
+who has not deployed yet has no use for what an invoke client is.
+
 ## Safety invariants
 
 - Never deploy or register ERC-8004 until the participant has explicitly chosen
   to publish at the phase-8 fork. Never change to mainnet at all.
 - Before any deploy, state plainly that the wallet's key is transmitted to the
   operator, and that this is why the workshop wallet is disposable.
-- Never print a private key or `WALLET_PASSWORD`.
+- Never print a private key or `WALLET_PASSWORD`. Never echo back the Pinata JWT.
+  The buyer `client_secret` is shown once by the CLI that mints it — tell them to
+  save it at that moment, and never repeat it afterwards.
+- Never say a published agent is reachable by anyone. Publishing makes it
+  discoverable, not callable: reaching it requires credentials the participant
+  hands out themselves.
 - Keep `.studio/wallets/` at the workspace root and outside `app/agent/`.
 - Store the generated testnet password only in `.studio/.env.local`; ensure
   `.studio/` is gitignored and never package it.
@@ -227,12 +259,24 @@ smoke test — works with an empty wallet.
 
 If there is no gas, say what it unlocks rather than stopping:
 
-- Name the thing they need — testnet BNB for gas — and give the faucet as the
-  place to get it. Do not say they "need a faucet": the faucet is the tap, the
-  gas is what is missing.
-- Explain that gas only matters for on-chain actions: escrow, delivery, and
-  publishing.
+- Name the thing they need — testnet BNB for gas — and be exact about where it
+  bites on this path: **only `bag erc8004 register`**, which needs about
+  0.002 tBNB. Deploying to the platform trial costs no gas at all.
+- Explain that gas otherwise only matters for on-chain commerce: escrow,
+  delivery, and settlement.
 - Continue to phase 8 regardless.
+
+Be honest about the faucet, because it is the step most likely to strand them:
+
+- The official tap is <https://testnet.bnbchain.org/faucet-smart>, but it only
+  releases tBNB to an address whose owner holds **0.002 BNB on BSC mainnet**.
+  Someone with no real BNB cannot use it. Say this up front instead of sending
+  them to a form that will reject them.
+- If they are at a live workshop, the organizer may be distributing tBNB — tell
+  them to ask before fighting the faucet.
+- Testnet `U` is a different token with a different tap:
+  <https://united-coin-u.github.io/u-faucet/>. That one matters for the BUYER,
+  not for this agent.
 
 Be precise about who pays what, because the `U` balance warning in `bag doctor`
 reads as if the seller needs `U` to trade. It does not:
@@ -257,38 +301,158 @@ The agent is built and tested. Ask ONE question, then stop and wait:
 > **Local** — you can run it, get signed quotes, and see the deliverable it
 > produces. Nobody else can reach it or buy from it. Nothing more to set up.
 >
-> **Publish** — it goes live for 48 hours and anyone can hire it. You'll need
-> three things: a Pinata API key (free, ~5 minutes), testnet gas, and a
-> platform account.
+> **Publish** — it goes live for 48 hours at a public URL, and you decide who
+> gets to call it. You'll need three things: a Pinata API key (free, ~5
+> minutes), a GitHub account for the platform, and — only if you also want it
+> listed on-chain — a little testnet gas.
 
 Do not deploy on your own initiative. Do not ask this question earlier — storage
 is two config values and is trivially changed after the fact, so there is no
 reason to make them decide before they have something that works.
 
 **If they choose local**, finish here. State what they can already do, and that
-publishing later is this same fork plus a Pinata key.
+publishing later is this same fork plus a Pinata key and a GitHub login.
 
-**If they choose publish**, walk them through it. Do not make them research IPFS
-— only the key is theirs to fetch; write the rest yourself:
+**If they choose publish**, walk them through 8a–8f below. Do not make them
+research IPFS or OAuth — only the Pinata key and the GitHub login are theirs to
+fetch; write and run the rest yourself, narrating as described in Teaching mode.
 
-1. Explain Pinata in one sentence: deliverables live off-chain and only their
-   hash goes on-chain, so a published agent needs somewhere the buyer can
-   actually read them from. `local` writes to a disk only this container sees.
-2. Ask them for a Pinata JWT (pinata.cloud → API Keys). Wait for it.
-3. Write to `.studio/.env.local` — never echo the key back:
-   - `STORAGE_API_KEY=<their JWT>`
-   - `STORAGE_API_URL=https://api.pinata.cloud/pinning/pinJSONToIPFS`
-   - `STORAGE_GATEWAY_URL=https://gateway.pinata.cloud/ipfs/`
-4. Set `[storage].kind = "ipfs"` in `app/agent/studio.toml`.
-5. Have them sign in to the platform, then run `bag deploy prepare` and fix what
-   it reports.
-6. Deploy, then verify the endpoint answers.
+### 8a. Storage — Pinata
 
-Registering ERC-8004 is optional and makes the agent discoverable on-chain.
-Offer it, note that it costs gas, and only run it if they say yes.
+Explain it in one sentence before touching anything: deliverables live off-chain
+and only their hash goes on-chain, so a published agent needs somewhere the
+buyer can actually read them from. `local` writes to a disk only this container
+sees, which is why publishing on `local` is blocked rather than merely
+discouraged.
 
-After deploying, tell them plainly: the trial is reclaimed at 48 hours, and a
-buyer still needs `U` to fund a job — being live is not the same as being paid.
+Then ask them for a Pinata JWT and wait. Give the exact path, including the
+permissions, because the default new-key dialog does not grant what is needed:
+
+> pinata.cloud → API Keys → New Key → enable **`pinJSONToIPFS`** under the
+> Pinata API / Pinning scopes → name it → Create. Copy the **JWT** (not the
+> API Key or the API Secret). It is shown once.
+
+`pinJSONToIPFS` is the only scope this agent uses — it posts a JSON pin envelope
+to the legacy pinning endpoint. `pinFileToIPFS` is not needed on this path.
+
+When they paste it, have them put it in `.studio/.env.local` at the workspace
+root — the same file that already holds `WALLET_PASSWORD`. Showing them the file
+is the point: they should leave knowing where their secrets live. Three lines,
+of which only the first is theirs:
+
+```text
+STORAGE_API_KEY=<their JWT>
+STORAGE_API_URL=https://api.pinata.cloud/pinning/pinJSONToIPFS
+STORAGE_GATEWAY_URL=https://gateway.pinata.cloud/ipfs/
+```
+
+Never echo the JWT back. Then set `[storage].kind = "ipfs"` in
+`app/agent/studio.toml`.
+
+### 8b. Platform login
+
+They must run this one themselves — it opens a GitHub device flow that needs
+their browser:
+
+```text
+bag platform login
+```
+
+Explain what it is for before they run it: the managed platform is what hosts
+the agent for the trial, and the login is how it knows whose account the agent
+belongs to. It prints a code and a URL; they open the URL, paste the code, and
+approve. Then confirm it took:
+
+```text
+bag platform whoami
+```
+
+Tell them the part that is not obvious: **the 48-hour trial is per GitHub
+account.** If they burn this one, logging in with a different account starts a
+fresh trial.
+
+### 8c. Deploy
+
+```text
+bag deploy prepare
+```
+
+Read its output with them and fix what it reports. It is a readiness sweep, not
+a deploy — nothing has happened yet. Then, after saying plainly that this is the
+step that ships their agent and starts the 48-hour clock, deploy.
+
+### 8d. Confirm it is actually deployed
+
+Do not stop at "the deploy command exited 0". Run these and narrate each:
+
+```text
+bag deploy info        # the buyer-facing surface: URL, agent id, token endpoint, scope
+bag platform agents    # it now shows up on their account
+bag platform credit    # how much of the 48 hours is left
+```
+
+`bag deploy info` is the one that matters — it prints the A2A card URL under
+`/v1/rt/<agentId>/.well-known/agent-card.json`, the invoke endpoint at
+`/v1/rt/<agentId>/a2a`, the token endpoint, and the scope `invoke:<agentId>`.
+That is what a buyer needs. If something looks wrong, `bag deploy logs`.
+
+Do NOT run `bag deploy status` here. It inspects AWS AgentCore runtimes for
+self-deployed agents and reports nothing useful for a `platform` destination —
+running it would teach them a command that will mislead them later.
+
+### 8e. Who can call it
+
+This is the step participants most often assume away, so state it before
+offering the command: the platform publishes the agent behind OAuth2
+client-credentials. Being deployed does not make it callable by strangers. A
+buyer needs a `client_id` and `client_secret` that the participant mints and
+hands over deliberately.
+
+Offer to mint one. Warn first that the secret is printed exactly once, so they
+must copy it the moment it appears:
+
+```text
+bag platform invoke-client new
+```
+
+Then tell them the four things a buyer needs, which they can re-read any time
+with `bag deploy info`: the card URL, the A2A invoke URL, the token endpoint
+(`/v1/oauth/token`, client-credentials), and the scope `invoke:<agentId>`. They
+can list and revoke with `bag platform invoke-client list` / `revoke`.
+
+### 8f. ERC-8004 — optional, and only after deploying
+
+Offer it, explain it, and only run it if they say yes. It costs about
+0.002 tBNB, so skip it without ceremony if the wallet is empty — the deployed
+agent works either way.
+
+What it does: writes their agent's name, description, protocol and endpoint into
+the ERC-8004 registry at `0x8004A818BFB912233c491871b3d84c89A494BD9e` on BSC
+Testnet, and assigns them an `agent_id`. It has to run **after** the deploy,
+because what gets registered is the live endpoint.
+
+Be precise about what registering buys them, since the word "discoverable" does
+a lot of hidden work: someone reading the registry can now find their agent and
+its card. They still cannot call it without credentials from 8e. Registration is
+the listing; the invoke client is the key.
+
+Then show them how to verify it landed on-chain — this answers "is my agent
+really on-chain?" better than any explanation:
+
+```text
+bag erc8004 show          # their record, including the agent_id they were assigned
+bag audit tail            # the transaction that wrote it
+```
+
+`bag erc8004 resolve <agent_id>` goes from an id back to the agent URI, which is
+how a buyer walks the same path in reverse. The registry contract is also
+viewable on BscScan if they want to see it outside the CLI.
+
+### After publishing
+
+Tell them plainly: at 48 hours the agent and its data are deleted and are not
+recoverable; the clock started at the deploy, not at the login. And being live
+is not the same as being paid — a buyer still has to fund a job in `U`.
 
 ## Final report
 
@@ -310,16 +474,31 @@ End with compact bullets:
 - Current readiness and exact next action.
 - Change later: price/model/storage/network/destination file or command.
 
-If they published, also report the live endpoint, that the trial expires in 48
-hours, and whether ERC-8004 was registered. If they kept it local, state in one
-line what publishing later would take.
+If they published, also report:
+
+- The buyer-facing card and invoke URLs, and the `agent_id` from `bag deploy
+  info`.
+- When the trial expires, and that the agent and its data go with it.
+- Whether a buyer invoke client was minted, and that without one nobody outside
+  can call the agent.
+- Whether ERC-8004 was registered and, if so, the on-chain `agent_id`.
+
+If they kept it local, state in one line what publishing later would take.
 
 Then add only these informational mainnet bullets:
 
 - Create a new production wallet; never reuse the workshop wallet.
-- Switch to `bsc-mainnet` and configure durable storage.
-- Fund real BNB for gas and paid LLM credits if needed.
-- Review price bounds, signing policy, OAuth, and production infrastructure.
+- Switch to `bsc-mainnet`. It is a different registry and different commerce
+  contracts, so the testnet `agent_id` does not carry over — registering again
+  is a new listing.
+- There is no 48-hour trial on mainnet. Hosting becomes a self-deploy to their
+  own AWS, which means AWS costs and a Cognito authorizer to let buyers in.
+- `U` stops being play money. Note that trusted x402 merchants settle in
+  **mainnet** `U` even from a testnet project.
+- Fund real BNB for gas, pay for durable storage, and budget paid LLM credits if
+  the free model is not enough.
+- Review price bounds and signing policy before anything can quote for real
+  money.
 - Run `bag deploy prepare`, then deploy and verify only after an explicit
   production decision.
 

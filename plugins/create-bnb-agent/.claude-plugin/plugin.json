@@ -1,7 +1,7 @@
 {
   "name": "create-bnb-agent",
   "description": "Create and locally validate a BNB Agent Studio workshop seller agent on BSC Testnet, from a name and a function.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Gaston Foncea"
   }

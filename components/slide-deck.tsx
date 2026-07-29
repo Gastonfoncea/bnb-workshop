@@ -384,8 +384,9 @@ const slides: Slide[] = [
       <>
         <Title>El gas es opcional</Title>
         <Lede>
-          Para <strong>armar el agente y probarlo</strong> no necesitás un peso.
-          El tBNB recién hace falta si querés cerrar el ciclo económico.
+          Para <strong>armar el agente, probarlo y hasta publicarlo</strong> no
+          necesitás un peso. El tBNB recién hace falta para registrarte on-chain
+          o para cerrar el ciclo económico.
         </Lede>
         <Split>
           <Panel
@@ -402,11 +403,12 @@ const slides: Slide[] = [
             tone="out"
             heading="Con gas de testnet sumás"
             items={[
+              "Registrarte en ERC-8004 (~0.002 tBNB)",
               "Financiar un trabajo real",
               "Entregar contra la cadena",
               "Cobrar y liquidar",
             ]}
-            footer="El tBNB se saca de un faucet — un grifo público que te regala tokens de prueba. Son lentos y limitan por dirección, y por eso esto queda fuera del camino crítico."
+            footer="El faucet oficial sólo suelta tBNB a quien tenga 0.002 BNB en mainnet. Sin BNB real no te sirve — por eso esto queda fuera del camino crítico."
           />
         </Split>
         <Note tag="Ojo con esto">
@@ -419,7 +421,7 @@ const slides: Slide[] = [
     ),
   },
   {
-    section: "Qué queda afuera",
+    section: "Publicar",
     eyebrow: "Parte 2 · La única pregunta que te va a hacer",
     body: (
       <>
@@ -444,19 +446,19 @@ const slides: Slide[] = [
             tone="out"
             heading="Publicado · 48 h"
             items={[
-              "Queda vivo y cualquiera lo contrata",
+              "Queda vivo en una URL pública",
+              "Vos decidís quién puede llamarlo",
               "Necesitás una API key de Pinata",
-              "Gas de testnet",
-              "Cuenta en la plataforma",
+              "Y una cuenta de GitHub para la plataforma",
             ]}
-            footer="La skill escribe la config; vos sólo pegás la key."
+            footer="La skill escribe la config; vos sólo pegás la key y aprobás el login."
           />
         </Split>
       </>
     ),
   },
   {
-    section: "Qué queda afuera",
+    section: "Publicar",
     eyebrow: "Parte 2 · Si elegís publicar",
     body: (
       <>
@@ -464,7 +466,9 @@ const slides: Slide[] = [
         <Lede>
           En la cadena sólo se guarda el <strong>hash</strong> de tu entregable —
           el archivo vive afuera. Pinata es donde vive, para que el comprador
-          pueda leerlo.
+          pueda leerlo. Con <Code>local</Code> queda en un disco que sólo ve tu
+          contenedor: el comprador recibe una dirección que no puede abrir, y por
+          eso publicar así está bloqueado.
         </Lede>
         <Terminal>
           <Dim># app/agent/studio.toml</Dim>
@@ -476,11 +480,149 @@ const slides: Slide[] = [
           STORAGE_GATEWAY_URL=https://gateway.pinata.cloud/…{"\n"}
           STORAGE_API_KEY=<Gold>tu JWT</Gold>
         </Terminal>
+        <Note tag="Al crear la key">
+          pinata.cloud → API Keys → New Key, y tildá <Code>pinJSONToIPFS</Code>.
+          Es el único permiso que se usa. Copiá el <strong>JWT</strong> — no la
+          API Key ni el Secret — que se muestra una sola vez.
+        </Note>
+      </>
+    ),
+  },
+  {
+    section: "Publicar",
+    eyebrow: "Parte 2 · El trial gestionado",
+    body: (
+      <>
+        <Title>Las 48 horas</Title>
         <Lede>
-          Con <Code>local</Code> el entregable queda en un disco que sólo ve tu
-          contenedor: el comprador recibe una dirección que no puede abrir. Por
-          eso publicar así está bloqueado.
+          La plataforma hostea tu agente gratis. Lo que conviene saber es cuándo
+          arranca el reloj y qué queda cuando termina.
         </Lede>
+        <Steps
+          items={[
+            <>
+              El reloj arranca en el <strong>primer deploy</strong>, no cuando te
+              logueás
+            </>,
+            <>
+              Ves cuánto queda con <Code>bag platform credit</Code>
+            </>,
+            <>
+              Al vencer, el agente <strong>y sus datos</strong> se borran. No se
+              recuperan
+            </>,
+            "El trial es por cuenta de GitHub: otra cuenta, otras 48 h",
+          ]}
+        />
+        <Note tag="El login">
+          <Code>bag platform login</Code> abre un device flow de GitHub: te
+          imprime un código, lo pegás en el navegador y aprobás. Es el único paso
+          que la skill no puede hacer por vos.
+        </Note>
+      </>
+    ),
+  },
+  {
+    section: "Publicar",
+    eyebrow: "Parte 2 · Verificar",
+    body: (
+      <>
+        <Title>¿Dónde lo veo deployado?</Title>
+        <Terminal>
+          <Dim># la superficie que necesita un comprador</Dim>
+          {"\n"}bag deploy info{"\n\n"}
+          <Dim># aparece en tu cuenta de la plataforma</Dim>
+          {"\n"}bag platform agents{"\n\n"}
+          <Dim># cuánto queda del trial</Dim>
+          {"\n"}bag platform credit
+        </Terminal>
+        <Lede>
+          <Code>bag deploy info</Code> es el que importa: te imprime la URL del
+          agent card, el endpoint de invocación, el token endpoint y tu{" "}
+          <Code>agentId</Code>. Si algo no responde, <Code>bag deploy logs</Code>
+          .
+        </Lede>
+        <Note tag="Este no lo uses" tone="warn">
+          <Code>bag deploy status</Code> inspecciona runtimes de AWS AgentCore —
+          es para self-deploy. Con el trial gestionado te devuelve todo vacío.
+        </Note>
+      </>
+    ),
+  },
+  {
+    section: "Publicar",
+    eyebrow: "Parte 2 · La confusión más cara",
+    body: (
+      <>
+        <Title>Publicado no es abierto</Title>
+        <Lede>
+          Que esté deployado no significa que cualquiera pueda usarlo. La
+          plataforma lo publica detrás de OAuth2:{" "}
+          <strong>vos decidís quién entra</strong>.
+        </Lede>
+        <Terminal>
+          bag platform invoke-client new{"\n"}
+          <Dim># imprime client_id + client_secret — el secret, UNA sola vez</Dim>
+        </Terminal>
+        <Bullets
+          items={[
+            <>
+              Le pasás al comprador cuatro cosas: la <strong>card</strong>, el{" "}
+              <strong>endpoint de invocación</strong>, el{" "}
+              <strong>token endpoint</strong> y el scope{" "}
+              <Code>invoke:agentId</Code>
+            </>,
+            <>
+              Las cuatro salen de <Code>bag deploy info</Code> cuando las
+              necesites de nuevo
+            </>,
+            <>
+              Se revocan cuando quieras:{" "}
+              <Code>bag platform invoke-client revoke</Code>
+            </>,
+          ]}
+        />
+      </>
+    ),
+  },
+  {
+    section: "Publicar",
+    eyebrow: "Parte 2 · Identidad on-chain",
+    body: (
+      <>
+        <Title>Que te encuentren: ERC-8004</Title>
+        <Lede>
+          Un registro on-chain donde queda escrito tu agente —nombre,
+          descripción, protocolo y la URL de su card— y donde te asignan un{" "}
+          <Code>agent_id</Code>. Va <strong>después</strong> del deploy: lo que
+          se registra es el endpoint que ya existe.
+        </Lede>
+        <Split>
+          <Panel
+            tone="in"
+            heading="Te da"
+            items={[
+              "Quedás listado en el registro público",
+              "Cualquiera puede resolver tu agent_id",
+              "Y llegar a tu agent card",
+            ]}
+          />
+          <Panel
+            tone="out"
+            heading="No te da"
+            items={[
+              "No habilita a nadie a llamarte",
+              "Las credenciales siguen siendo tuyas",
+            ]}
+            footer="Registrarte es la guía telefónica. La invoke client es la llave."
+          />
+        </Split>
+        <Note tag="¿Cómo sé que está on-chain?">
+          <Code>bag erc8004 show</Code> te devuelve tu registro y tu{" "}
+          <Code>agent_id</Code>; <Code>bag audit tail</Code>, la transacción que
+          lo escribió. Cuesta ~0.002 tBNB — es lo único de todo el camino que
+          gasta gas.
+        </Note>
       </>
     ),
   },
@@ -572,11 +714,17 @@ const slides: Slide[] = [
         <Steps
           items={[
             "Una API key de Pinata, si vas a publicar — cinco minutos, gratis",
-            "tBNB para las operaciones on-chain de tu agente",
-            "Tu cuenta en la plataforma de BNB Chain",
             <>
-              Una segunda wallet con <Code>U</Code> que haga de compradora, si
-              querés cerrar el ciclo económico entero
+              Una cuenta de GitHub para el login de la plataforma
+            </>,
+            <>
+              tBNB, sólo si querés registrarte en ERC-8004. El faucet oficial
+              pide 0.002 BNB en mainnet
+            </>,
+            <>
+              Una segunda wallet con <Code>U</Code> de testnet que haga de
+              compradora, si querés cerrar el ciclo entero — el <Code>U</Code>{" "}
+              tiene su propio faucet
             </>,
           ]}
         />
@@ -656,6 +804,76 @@ const slides: Slide[] = [
           Creá una wallet nueva. La del workshop es descartable y su clave viaja
           al operador cuando desplegás — nunca la reuses con plata real.
         </Note>
+      </>
+    ),
+  },
+  {
+    section: "Apéndice",
+    eyebrow: "Apéndice · El otro lado del mostrador",
+    body: (
+      <>
+        <Title>Cómo se compra</Title>
+        <Lede>
+          Tu agente es el vendedor. Para verlo cobrar de verdad hace falta
+          alguien del otro lado — y ese alguien es otra wallet.
+        </Lede>
+        <Steps
+          items={[
+            <>
+              El comprador consigue <Code>U</Code> de testnet en su faucet
+            </>,
+            <>
+              Le pide una cotización firmada al agente y la ancla on-chain:{" "}
+              <Code>bag erc8183 buy</Code> — crea el job y lo fondea
+            </>,
+            <>
+              El vendedor entrega: <Code>bag erc8183 submit</Code>
+            </>,
+            <>
+              El comprador libera el pago: <Code>bag erc8183 settle</Code>
+            </>,
+          ]}
+        />
+        <Note tag="Y para llamarlo">
+          Si el agente está en la plataforma, el comprador además necesita el{" "}
+          <Code>client_id</Code> y el <Code>client_secret</Code> que le diste
+          vos. Sin eso no llega ni a pedir la cotización.
+        </Note>
+      </>
+    ),
+  },
+  {
+    section: "Apéndice",
+    eyebrow: "Apéndice · Producción",
+    body: (
+      <>
+        <Title>Qué cambia en mainnet</Title>
+        <Bullets
+          items={[
+            <>
+              <strong className="text-white">No hay trial.</strong> El hosting
+              pasa a ser tuyo: self-deploy a tu propia AWS, con sus costos y un
+              authorizer Cognito para dejar entrar a los compradores
+            </>,
+            <>
+              <strong className="text-white">Otros contratos.</strong> Otro
+              registro ERC-8004, así que tu <Code>agent_id</Code> de testnet no
+              viaja: registrarte es empezar de cero
+            </>,
+            <>
+              <strong className="text-white">
+                La <Code>U</Code> deja de ser de mentira.
+              </strong>{" "}
+              Y ojo: los merchants x402 liquidan en <Code>U</Code> de mainnet
+              aunque tu proyecto sea de testnet
+            </>,
+            <>
+              <strong className="text-white">Wallet nueva, sí o sí</strong>, más
+              storage pago y una revisión de tus price bounds y tu política de
+              firma antes de cotizar por plata real
+            </>,
+          ]}
+        />
       </>
     ),
   },
