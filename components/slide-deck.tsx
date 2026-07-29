@@ -946,6 +946,15 @@ export function SlideDeck() {
         />
       </div>
 
+      {/* Back to the landing. Pinned top-left, where a back control is expected —
+          it sits inside the main's pt-14 gutter, so it never overlaps a slide. */}
+      <Link
+        href="/"
+        className="fixed left-4 top-3 z-30 rounded-lg border border-line bg-ink/85 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50 backdrop-blur transition-colors hover:border-bnb hover:text-bnb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb sm:left-6"
+      >
+        ← Inicio
+      </Link>
+
       <main
         className="flex flex-1 flex-col justify-center overflow-y-auto px-5 pb-24 pt-14 sm:px-8 lg:px-12"
         onTouchStart={(e) => {
@@ -969,21 +978,9 @@ export function SlideDeck() {
 
       {/* chrome */}
       <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-4 border-t border-line bg-ink/85 px-4 py-2.5 backdrop-blur sm:px-6">
-        {/* Mirrors the landing header's "Ver las slides" so the two pages link
-            back to each other. Labelled rather than a bare arrow: the deck's own
-            ← lives on the other end of this same bar. */}
-        <div className="flex min-w-0 items-center gap-3">
-          <Link
-            href="/"
-            className="shrink-0 rounded font-mono text-[11px] uppercase tracking-[0.14em] text-white/50 transition-colors hover:text-bnb focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnb"
-          >
-            ← Inicio
-          </Link>
-          <span aria-hidden className="h-3 w-px shrink-0 bg-line" />
-          <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-white/35">
-            {slide.section}
-          </span>
-        </div>
+        <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-white/35">
+          {slide.section}
+        </span>
 
         <div className="flex shrink-0 items-center gap-2">
           <button
